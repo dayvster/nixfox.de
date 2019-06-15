@@ -1,0 +1,8 @@
+nixfox/obj/*
+nixfox/Data/*
+.vscode
+.vs
+Data/*
+Data/
+obj/*
+obj/
