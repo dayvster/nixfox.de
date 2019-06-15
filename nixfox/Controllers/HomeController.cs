@@ -27,9 +27,13 @@ namespace nixfox.Controllers
 		[HttpPost, Route("/")]
 		public IActionResult PostURL([FromBody] string url) {
 			try {
+				if(!url.Contains("http")){
+					url = "http://"+url;
+				}
 				Shortener shortURL = new Shortener(url);
 				return Json(shortURL.Token);
 			}catch(Exception ex) {
+				
 				if (ex.Message == "URL already exists") {
 					Response.StatusCode = 400;
 					return Json(new URLResponse() { url = url, status = "URL already exists", token = new LiteDB.LiteDatabase("Data/Urls.db").GetCollection<NixURL>().Find(u=>u.URL == url).FirstOrDefault().Token });
@@ -45,6 +49,10 @@ namespace nixfox.Controllers
 		[HttpGet, Route("/{token}")]
 		public IActionResult NixRedirect([FromRoute] string token) {
 			return Redirect(new LiteDB.LiteDatabase("Data/Urls.db").GetCollection<NixURL>().FindOne(u => u.Token == token).URL);
+		}
+		[HttpGet, Route("/all")]
+		public IActionResult GetAll(){
+			return Json(new LiteDB.LiteDatabase("Data/Urls.db").GetCollection<NixURL>().FindAll());
 		}
 	}
 }
