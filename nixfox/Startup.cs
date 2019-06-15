@@ -17,7 +17,6 @@ namespace nixfox
 	{
 		public Startup(IConfiguration configuration) {
 			Configuration = configuration;
-			new LiteDB.LiteDatabase("Data/Urls.db").DropCollection("BitURL");
 		}
 
 		public IConfiguration Configuration { get; }
