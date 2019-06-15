@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using nixfox.App;
+using Volt.Http;
 
 namespace nixfox.Controllers
 {
@@ -30,6 +31,7 @@ namespace nixfox.Controllers
 				if(!url.Contains("http")){
 					url = "http://"+url;
 				}
+				url = new VClient().Get(new Uri(url)).Headers.Location.ToString();
 				Shortener shortURL = new Shortener(url);
 				return Json(shortURL.Token);
 			}catch(Exception ex) {
