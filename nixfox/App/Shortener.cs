@@ -26,7 +26,7 @@ namespace nixfox.App{
 			var db = new LiteDatabase("Data/Urls.db");
 			var urls = db.GetCollection<NixURL>();
 			while (urls.Exists(u => u.Token == GenerateToken().Token)) ;
-			biturl = new NixURL() { Token = Token, URL = url, ShortenedURL = new Config().BASE_URL + Token };
+			biturl = new NixURL() { Token = Token, URL = url, ShortenedURL = new NixConf().Config.BASE_URL + Token };
 			if (urls.Exists(u => u.URL == url))
 				throw new Exception("URL already exists");
 			urls.Insert(biturl);
