@@ -22,10 +22,14 @@ submitBtn.onclick = function(ev){
             }
         }).then(res => res.json())
         .then(response => {
-            if(response.status == "URL already exists"){
-                urlInput.value = new URL(window.location)+response.token;
-                submitBtn.innerHTML = "Copy";
-                submitBtn.classList.add("copy");
+			if (response.status === "URL already exists") {
+				urlInput.value = new URL(window.location) + response.token;
+				submitBtn.innerHTML = "Copy";
+				submitBtn.classList.add("copy");
+			}
+			else if (response.status === "already shortened") {
+				urlInput.value = "";
+				RespArea("That link has already been shortened by nixfox.de");
             }else{
                 console.log(response);
                 urlInput.value = new URL(window.location)+response;

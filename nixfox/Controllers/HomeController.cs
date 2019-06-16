@@ -33,7 +33,7 @@ namespace nixfox.Controllers
 				}
 				if (new LiteDB.LiteDatabase("Data/Urls.db").GetCollection<NixURL>().Exists(u=> u.ShortenedURL == url)) {
 					Response.StatusCode = 405;
-					return Json(new URLResponse(){url = url, status = "Not allowed to redirect to "+HttpContext.Request.Host.Host+" to prevent request chaining", token = null});
+					return Json(new URLResponse(){url = url, status = "already shortened", token = null});
 				}
 				Shortener shortURL = new Shortener(url);
 				return Json(shortURL.Token);
@@ -50,10 +50,6 @@ namespace nixfox.Controllers
 		[HttpGet, Route("/{token}")]
 		public IActionResult NixRedirect([FromRoute] string token) {
 			return Redirect(new LiteDB.LiteDatabase("Data/Urls.db").GetCollection<NixURL>().FindOne(u => u.Token == token).URL);
-		}
-		[HttpGet, Route("/all")]
-		public IActionResult GetAll(){
-			return Json(new LiteDB.LiteDatabase("Data/Urls.db").GetCollection<NixURL>().FindAll());
 		}
 		
 		private string FindRedirect(string url){
