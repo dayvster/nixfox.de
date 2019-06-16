@@ -28,12 +28,12 @@ namespace nixfox.Controllers
 		[HttpPost, Route("/")]
 		public IActionResult PostURL([FromBody] string url) {
 			try {
-				if(new Uri(url).Host == HttpContext.Request.Host.Host){
+				if (!url.Contains("http")) {
+					url = "http://" + url;
+				}
+				if (new Uri(url).Host == HttpContext.Request.Host.Host) {
 					Response.StatusCode = 405;
 					return Json(new URLResponse(){url = url, status = "Not allowed to redirect to "+HttpContext.Request.Host.Host+" to prevent request chaining", token = null});
-				}
-				if(!url.Contains("http")){
-					url = "http://"+url;
 				}
 				Shortener shortURL = new Shortener(url);
 				return Json(shortURL.Token);
@@ -42,7 +42,6 @@ namespace nixfox.Controllers
 					Response.StatusCode = 400;
 					return Json(new URLResponse() { url = url, status = "URL already exists", token = new LiteDB.LiteDatabase("Data/Urls.db").GetCollection<NixURL>().Find(u=>u.URL == url).FirstOrDefault().Token });
 				}
-				
 				throw new Exception(ex.Message);
 			}
 			return StatusCode(500);
@@ -56,6 +55,7 @@ namespace nixfox.Controllers
 		public IActionResult GetAll(){
 			return Json(new LiteDB.LiteDatabase("Data/Urls.db").GetCollection<NixURL>().FindAll());
 		}
+		
 		private string FindRedirect(string url){
 			string result = string.Empty;
 			using (var client = new HttpClient())
@@ -68,5 +68,6 @@ namespace nixfox.Controllers
 			}
 			return result;
 		}
+
 	}
 }
