@@ -53,8 +53,7 @@ namespace nixfox.Controllers
 		}
 		[HttpGet, Route("/all")]
 		public IActionResult GetAll(){
-			return Json(new NixConf());
-			//return Json(new LiteDB.LiteDatabase("Data/Urls.db").GetCollection<NixURL>().FindAll());
+			return Json(new LiteDB.LiteDatabase("Data/Urls.db").GetCollection<NixURL>().FindAll());
 		}
 		
 		private string FindRedirect(string url){
