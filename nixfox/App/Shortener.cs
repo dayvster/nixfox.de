@@ -6,6 +6,7 @@ namespace nixfox.App{
 	public class NixURL{
 		public Guid ID { get; set; }
 		public string URL { get; set; }
+		public string ShortenedURL { get; set; }
 		public string Token { get; set; }
 		public int Clicked { get; set; } = 0;
 		public DateTime Created { get; set; } = DateTime.Now;
@@ -25,7 +26,7 @@ namespace nixfox.App{
 			var db = new LiteDatabase("Data/Urls.db");
 			var urls = db.GetCollection<NixURL>();
 			while (urls.Exists(u => u.Token == GenerateToken().Token)) ;
-			biturl = new NixURL() { Token = Token, URL = url};
+			biturl = new NixURL() { Token = Token, URL = url, ShortenedURL = new Config().BASE_URL + Token };
 			if (urls.Exists(u => u.URL == url))
 				throw new Exception("URL already exists");
 			urls.Insert(biturl);

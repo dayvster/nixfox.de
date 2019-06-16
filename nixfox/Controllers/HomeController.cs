@@ -31,7 +31,7 @@ namespace nixfox.Controllers
 				if (!url.Contains("http")) {
 					url = "http://" + url;
 				}
-				if (new Uri(url).Host == HttpContext.Request.Host.Host) {
+				if (new LiteDB.LiteDatabase("Data/Urls.db").GetCollection<NixURL>().Exists(u=> u.ShortenedURL == url)) {
 					Response.StatusCode = 405;
 					return Json(new URLResponse(){url = url, status = "Not allowed to redirect to "+HttpContext.Request.Host.Host+" to prevent request chaining", token = null});
 				}
@@ -53,7 +53,8 @@ namespace nixfox.Controllers
 		}
 		[HttpGet, Route("/all")]
 		public IActionResult GetAll(){
-			return Json(new LiteDB.LiteDatabase("Data/Urls.db").GetCollection<NixURL>().FindAll());
+			return Json(new NixConf());
+			//return Json(new LiteDB.LiteDatabase("Data/Urls.db").GetCollection<NixURL>().FindAll());
 		}
 		
 		private string FindRedirect(string url){
